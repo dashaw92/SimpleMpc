@@ -1,14 +1,15 @@
 package me.danny.mpc.gui;
 
-import me.danny.mpc.api.SkipCommand;
+import me.danny.mpc.api.net.ConnectionManager;
+import me.danny.mpc.api.net.packets.NextSongPacket;
 
 @SuppressWarnings("serial")
-public final class SkipButton extends CommandButton<Void> {
+public final class SkipButton extends CommandButton {
 
     private final MainMenu menu;
     
     public SkipButton(MainMenu menu) {
-        super(">>", new SkipCommand());
+        super(">>");
         this.menu = menu;
         
         setToolTipText("Next song");
@@ -16,8 +17,7 @@ public final class SkipButton extends CommandButton<Void> {
     
     @Override
     protected void onClick() {
-        getCommand().perform();
-        
+        ConnectionManager.sendPacket(new NextSongPacket());
         menu.updateTitle();
     }
     

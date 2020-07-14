@@ -1,4 +1,4 @@
-package me.danny.mpc.api.net;
+package me.danny.mpc.api;
 
 public enum Tag {
 

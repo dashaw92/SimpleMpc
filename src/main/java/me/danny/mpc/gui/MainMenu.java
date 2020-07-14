@@ -5,18 +5,17 @@ import java.awt.GridLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import me.danny.mpc.api.GetSongCommand;
-import me.danny.mpc.api.GetStateCommand;
-import me.danny.mpc.api.MpcCommand;
+import me.danny.mpc.api.CurrentSong;
 import me.danny.mpc.api.PlaybackState;
+import me.danny.mpc.api.net.ConnectionManager;
+import me.danny.mpc.api.net.packets.CurrentSongPacket;
+import me.danny.mpc.api.net.packets.StatusPacket;
 
 @SuppressWarnings("serial")
-public final class MainMenu extends JFrame {
-
-    private static final MpcCommand<PlaybackState> queryState = new GetStateCommand();
-    private static final MpcCommand<String> querySong = new GetSongCommand();
+public final class MainMenu extends JFrame implements Runnable {
     
     public MainMenu() {
         try {
@@ -26,10 +25,6 @@ public final class MainMenu extends JFrame {
         setPreferredSize(new Dimension(800, 200));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(true);
-        setLayout(new GridLayout(2, 1));
-        
-        JPanel labels = new JPanel();
-        labels.add(CurrentSongLabel.start(this));
         
         JPanel controls = new JPanel();
         controls.setLayout(new GridLayout(1, 3));
@@ -37,19 +32,31 @@ public final class MainMenu extends JFrame {
         controls.add(new TogglePlaybackButton(this));
         controls.add(new SkipButton(this));
 
-        add(labels);
         add(controls);
         pack();
         updateTitle();
         setLocationRelativeTo(null);
+        
+        new Thread(this).start();
     }
     
     protected void updateTitle() {
-        String fmt = "(%s) - [%s]";
+        String fmt = "(%s) - [%s - %s]";
         
-        PlaybackState state = queryState.perform();
-        String song = querySong.perform();
+        PlaybackState state = ConnectionManager.sendPacket(new StatusPacket()).map(status -> status.state).orElse(PlaybackState.STOP);
+        CurrentSong song = ConnectionManager.sendPacket(new CurrentSongPacket()).orElse(new CurrentSong());
         
-        setTitle(String.format(fmt, state.name(), song));
+        setTitle(String.format(fmt, state.name(), song.artist, song.title));
     }
+    
+    @Override
+    public void run() {
+        while(true) {
+            SwingUtilities.invokeLater(this::updateTitle);
+            try {
+                Thread.sleep(1000L);
+            } catch(InterruptedException ex) {}
+        }
+    }
+
 }

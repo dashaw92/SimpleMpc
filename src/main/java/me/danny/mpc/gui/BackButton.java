@@ -1,14 +1,15 @@
 package me.danny.mpc.gui;
 
-import me.danny.mpc.api.BackCommand;
+import me.danny.mpc.api.net.ConnectionManager;
+import me.danny.mpc.api.net.packets.PreviousSongPacket;
 
 @SuppressWarnings("serial")
-public final class BackButton extends CommandButton<Void> {
+public final class BackButton extends CommandButton {
 
     private final MainMenu menu;
     
     public BackButton(MainMenu menu) {
-        super("<<", new BackCommand());
+        super("<<");
         this.menu = menu;
         
         setToolTipText("Previous song");
@@ -16,7 +17,7 @@ public final class BackButton extends CommandButton<Void> {
     
     @Override
     protected void onClick() {
-        getCommand().perform();
+        ConnectionManager.sendPacket(new PreviousSongPacket());
         menu.updateTitle();
     }
     
