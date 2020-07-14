@@ -34,8 +34,7 @@ public final class PlayerWindow extends JFrame implements Runnable {
         pack();
         setLocationRelativeTo(null);
         
-        
-        new Thread(this).start();
+        new Thread(this, "PlayerWindowUpdate").start();
     }
     
     private void updateTitle() {

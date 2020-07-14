@@ -4,6 +4,10 @@ import java.util.List;
 
 import me.danny.mpc.api.CurrentSong;
 
+/**
+ * Retrieve info about the currently playing song
+ * @see {@link CurrentSong}
+ */
 public class CurrentSongPacket implements Packet<CurrentSong> {
 
     @Override

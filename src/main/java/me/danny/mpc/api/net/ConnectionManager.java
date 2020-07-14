@@ -11,6 +11,17 @@ import java.util.Scanner;
 
 import me.danny.mpc.api.net.packets.Packet;
 
+/**
+ * A singleton connection to an MPD server<br>
+ * Useful methods in this class:<br>
+ * <ul>
+ * <li> {@link #isConnected()}<br>
+ * <li> {@link #connectTo(String, int)}<br>
+ * <li> {@link #sendPacket(Packet)}<br>
+ * </ul>
+ * @see {@link Packet}
+ * @author dasha
+ */
 public final class ConnectionManager {
     
     private ConnectionManager() {}
@@ -24,6 +35,13 @@ public final class ConnectionManager {
     private static String currentHost;
     private static int currentPort;
     
+    /**
+     * Connect to an arbitrary host.<br>
+     * If the host is invalid, or the connection is not to an MPD server,<br>
+     * {@link #isConnected()} will return false
+     * @param address The address of the MPD server
+     * @param port The port of the MPD server
+     */
     public static void connectTo(String address, int port) {
         try {
             if(isConnected() && socket != null) {
@@ -45,18 +63,34 @@ public final class ConnectionManager {
         } catch(IOException ex) {} //ignore, `connected` manages status reporting
     }
     
+    /**
+     * @return The address provided to the last successful {@link #connectTo(String, int)}
+     */
     public static String getCurrentHost() {
         return currentHost;
     }
     
+    /**
+     * @return The port provided to the last successful {@link #connectTo(String, int)}
+     */
     public static int getCurrentPort() {
         return currentPort;
     }
     
+    /**
+     * Used to check the status of the connection
+     * @return True if this is connected to an MPD server
+     */
     public static boolean isConnected() {
         return connected;
     }
     
+    /**
+     * Send a {@link Packet} to the connected server
+     * @param <T> The type of data the packet will map the server's response to
+     * @param packet The packet instance to send
+     * @return The mapped response wrapped in {@link Optional}, or {@link Optional#empty()}
+     */
     public synchronized static <T> Optional<T> sendPacket(Packet<T> packet) {
         Objects.requireNonNull(packet, "Packet cannot be null");
         if(!isConnected()) return Optional.empty();
