@@ -8,10 +8,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import me.danny.mpc.api.CurrentSong;
-import me.danny.mpc.api.Status;
 import me.danny.mpc.api.net.ConnectionManager;
 import me.danny.mpc.api.net.packets.CurrentSongPacket;
-import me.danny.mpc.api.net.packets.StatusPacket;
+import me.danny.mpc.api.net.packets.Heartbeat;
+import me.danny.mpc.api.net.packets.Heartbeat.Status;
 import me.danny.mpc.gui.components.BackButton;
 import me.danny.mpc.gui.components.SkipButton;
 import me.danny.mpc.gui.components.TogglePlaybackButton;
@@ -46,10 +46,10 @@ public final class PlayerWindow extends JFrame implements Runnable {
         
         String fmt = "(%s) - [%s - %s]";
         
-        Status status = ConnectionManager.sendPacket(new StatusPacket()).orElse(new Status());
+        Status status = Heartbeat.getLastStatus();
         CurrentSong song = ConnectionManager.sendPacket(new CurrentSongPacket()).orElse(new CurrentSong());
         
-        setTitle(String.format(fmt, status.state.name(), song.artist, song.title));
+        setTitle(String.format(fmt, status.getState().name(), song.artist, song.title));
     }
     
     @Override

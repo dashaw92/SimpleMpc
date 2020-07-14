@@ -2,8 +2,8 @@ package me.danny.mpc.gui.components;
 
 import me.danny.mpc.api.PlaybackState;
 import me.danny.mpc.api.net.ConnectionManager;
+import me.danny.mpc.api.net.packets.Heartbeat;
 import me.danny.mpc.api.net.packets.PlayPacket;
-import me.danny.mpc.api.net.packets.StatusPacket;
 
 @SuppressWarnings("serial")
 public final class TogglePlaybackButton extends CommandButton {
@@ -21,13 +21,7 @@ public final class TogglePlaybackButton extends CommandButton {
     }
     
     public TogglePlaybackButton() {
-        super(
-                getIcon(
-                    ConnectionManager.sendPacket(new StatusPacket())
-                        .map(state -> state.state)
-                        .orElse(PlaybackState.STOP)
-                )
-        );
+        super(getIcon(Heartbeat.getLastStatus().getState()));
         
         setToolTipText("Toggle playback state");
     }
@@ -36,7 +30,20 @@ public final class TogglePlaybackButton extends CommandButton {
     protected void onClick() {
         PlaybackState state = ConnectionManager.sendPacket(new PlayPacket())
                 .orElse(PlaybackState.STOP);
-        setText(getIcon(state));
+        
+        String label;
+        switch(state) {
+            case PLAY:
+                label = getIcon(PlaybackState.PAUSE);
+                break;
+            case PAUSE:
+                label = getIcon(PlaybackState.PLAY);
+                break;
+            default:
+                label = getIcon(state);
+                break;
+        }
+        setText(label);
     }
 
 }

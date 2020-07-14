@@ -57,7 +57,7 @@ public final class ConnectionManager {
         return connected;
     }
     
-    public static <T> Optional<T> sendPacket(Packet<T> packet) {
+    public synchronized static <T> Optional<T> sendPacket(Packet<T> packet) {
         Objects.requireNonNull(packet, "Packet cannot be null");
         if(!isConnected()) return Optional.empty();
         
