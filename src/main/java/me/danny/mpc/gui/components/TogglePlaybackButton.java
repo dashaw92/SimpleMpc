@@ -1,4 +1,4 @@
-package me.danny.mpc.gui;
+package me.danny.mpc.gui.components;
 
 import me.danny.mpc.api.PlaybackState;
 import me.danny.mpc.api.net.ConnectionManager;
@@ -20,9 +20,7 @@ public final class TogglePlaybackButton extends CommandButton {
         }
     }
     
-    private final MainMenu menu;
-    
-    public TogglePlaybackButton(MainMenu menu) {
+    public TogglePlaybackButton() {
         super(
                 getIcon(
                     ConnectionManager.sendPacket(new StatusPacket())
@@ -30,7 +28,6 @@ public final class TogglePlaybackButton extends CommandButton {
                         .orElse(PlaybackState.STOP)
                 )
         );
-        this.menu = menu;
         
         setToolTipText("Toggle playback state");
     }
@@ -40,8 +37,6 @@ public final class TogglePlaybackButton extends CommandButton {
         PlaybackState state = ConnectionManager.sendPacket(new PlayPacket())
                 .orElse(PlaybackState.STOP);
         setText(getIcon(state));
-        
-        menu.updateTitle();
     }
 
 }

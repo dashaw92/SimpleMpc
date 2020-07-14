@@ -1,4 +1,4 @@
-package me.danny.mpc.gui;
+package me.danny.mpc.gui.components;
 
 import java.awt.Font;
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -43,6 +44,7 @@ public final class ConnectionManager {
     }
     
     public static <T> Optional<T> sendPacket(Packet<T> packet) {
+        Objects.requireNonNull(packet, "Packet cannot be null");
         if(!isConnected()) throw new IllegalStateException("Not connected to an MPD session!!!");
         
         try {

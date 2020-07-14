@@ -9,10 +9,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import me.danny.mpc.api.CurrentSong;
-import me.danny.mpc.api.PlaybackState;
+import me.danny.mpc.api.Status;
 import me.danny.mpc.api.net.ConnectionManager;
 import me.danny.mpc.api.net.packets.CurrentSongPacket;
 import me.danny.mpc.api.net.packets.StatusPacket;
+import me.danny.mpc.gui.components.BackButton;
+import me.danny.mpc.gui.components.SkipButton;
+import me.danny.mpc.gui.components.TogglePlaybackButton;
 
 @SuppressWarnings("serial")
 public final class MainMenu extends JFrame implements Runnable {
@@ -28,25 +31,24 @@ public final class MainMenu extends JFrame implements Runnable {
         
         JPanel controls = new JPanel();
         controls.setLayout(new GridLayout(1, 3));
-        controls.add(new BackButton(this));
-        controls.add(new TogglePlaybackButton(this));
-        controls.add(new SkipButton(this));
+        controls.add(new BackButton());
+        controls.add(new TogglePlaybackButton());
+        controls.add(new SkipButton());
 
         add(controls);
         pack();
-        updateTitle();
         setLocationRelativeTo(null);
         
         new Thread(this).start();
     }
     
-    protected void updateTitle() {
+    private void updateTitle() {
         String fmt = "(%s) - [%s - %s]";
         
-        PlaybackState state = ConnectionManager.sendPacket(new StatusPacket()).map(status -> status.state).orElse(PlaybackState.STOP);
+        Status status = ConnectionManager.sendPacket(new StatusPacket()).orElse(new Status());
         CurrentSong song = ConnectionManager.sendPacket(new CurrentSongPacket()).orElse(new CurrentSong());
         
-        setTitle(String.format(fmt, state.name(), song.artist, song.title));
+        setTitle(String.format(fmt, status.state.name(), song.artist, song.title));
     }
     
     @Override
@@ -54,7 +56,7 @@ public final class MainMenu extends JFrame implements Runnable {
         while(true) {
             SwingUtilities.invokeLater(this::updateTitle);
             try {
-                Thread.sleep(1000L);
+                Thread.sleep(100L);
             } catch(InterruptedException ex) {}
         }
     }

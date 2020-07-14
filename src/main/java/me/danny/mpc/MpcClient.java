@@ -14,6 +14,7 @@ public final class MpcClient {
         }  
       
         Arguments.parse(args);
+        
         ConnectionManager.connectTo(Arguments.getHost(), Arguments.getPort());
         MainMenu gui = new MainMenu();
         gui.setVisible(true);
