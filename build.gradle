@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+}
+
+group 'me.danny'
+version '0.2.0'
+compileJava.options.encoding = "UTF-8"
+
+repositories {
+    mavenCentral()
+    maven { url "https://oss.sonatype.org/content/groups/public/" }
+}
+
+dependencies {
+    compile "com.sanityinc:jargs:2.0-SNAPSHOT"
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "me.danny.mpc.MpcClient"
+    }
+ 
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

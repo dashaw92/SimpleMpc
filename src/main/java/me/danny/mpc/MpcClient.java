@@ -1,9 +1,5 @@
 package me.danny.mpc;
 
-import me.danny.mpc.api.net.ConnectionManager;
-import me.danny.mpc.api.net.ListPacket;
-import me.danny.mpc.api.net.Tag;
-
 public final class MpcClient {
 
     public static void main(String[] args) {
@@ -21,8 +17,10 @@ public final class MpcClient {
 //        MainMenu gui = new MainMenu();
 //        gui.setVisible(true);
         
-        ConnectionManager mgr = new ConnectionManager("localhost", 6600);
-        mgr.sendPacket(new ListPacket(Tag.ARTIST)).forEach(System.out::println);
+//        ConnectionManager mgr = new ConnectionManager("localhost", 6600);
+        Arguments.parse(args);
+        System.out.println(Arguments.getHost());
+        System.out.println(Arguments.getPort());
     }
     
 }
