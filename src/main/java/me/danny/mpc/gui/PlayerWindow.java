@@ -6,7 +6,6 @@ import java.awt.GridLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 import me.danny.mpc.api.CurrentSong;
 import me.danny.mpc.api.Status;
@@ -18,15 +17,11 @@ import me.danny.mpc.gui.components.SkipButton;
 import me.danny.mpc.gui.components.TogglePlaybackButton;
 
 @SuppressWarnings("serial")
-public final class MainMenu extends JFrame implements Runnable {
+public final class PlayerWindow extends JFrame implements Runnable {
     
-    public MainMenu() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch(Exception ignored) {}
-        
+    public PlayerWindow() {
         setPreferredSize(new Dimension(800, 200));
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(true);
         
         JPanel controls = new JPanel();
@@ -39,10 +34,16 @@ public final class MainMenu extends JFrame implements Runnable {
         pack();
         setLocationRelativeTo(null);
         
+        
         new Thread(this).start();
     }
     
     private void updateTitle() {
+        if(!ConnectionManager.isConnected()) {
+            setTitle("Not connected");
+            return;
+        }
+        
         String fmt = "(%s) - [%s - %s]";
         
         Status status = ConnectionManager.sendPacket(new StatusPacket()).orElse(new Status());

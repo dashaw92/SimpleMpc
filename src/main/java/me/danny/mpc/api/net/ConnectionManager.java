@@ -21,6 +21,9 @@ public final class ConnectionManager {
     private static Scanner scanner;
     private static DataOutputStream dos;
     
+    private static String currentHost;
+    private static int currentPort;
+    
     public static void connectTo(String address, int port) {
         try {
             if(isConnected() && socket != null) {
@@ -35,8 +38,19 @@ public final class ConnectionManager {
             
             String response = scanner.nextLine();
             if(!response.startsWith(HEADER)) return;
+            
+            currentHost = address;
+            currentPort = port;
             connected = true;
         } catch(IOException ex) {} //ignore, `connected` manages status reporting
+    }
+    
+    public static String getCurrentHost() {
+        return currentHost;
+    }
+    
+    public static int getCurrentPort() {
+        return currentPort;
     }
     
     public static boolean isConnected() {
@@ -45,7 +59,7 @@ public final class ConnectionManager {
     
     public static <T> Optional<T> sendPacket(Packet<T> packet) {
         Objects.requireNonNull(packet, "Packet cannot be null");
-        if(!isConnected()) throw new IllegalStateException("Not connected to an MPD session!!!");
+        if(!isConnected()) return Optional.empty();
         
         try {
             String cmd = packet.getData() + "\n";
