@@ -12,9 +12,10 @@ import me.danny.mpc.api.net.ConnectionManager;
 import me.danny.mpc.api.net.packets.CurrentSongPacket;
 import me.danny.mpc.api.net.packets.Heartbeat;
 import me.danny.mpc.api.net.packets.Heartbeat.Status;
-import me.danny.mpc.gui.components.BackButton;
-import me.danny.mpc.gui.components.SkipButton;
-import me.danny.mpc.gui.components.TogglePlaybackButton;
+import me.danny.mpc.gui.components.buttons.BackButton;
+import me.danny.mpc.gui.components.buttons.SkipButton;
+import me.danny.mpc.gui.components.buttons.TogglePlaybackButton;
+import me.danny.mpc.gui.components.sliders.VolumeSlider;
 
 @SuppressWarnings("serial")
 public final class PlayerWindow extends JFrame implements Runnable {
@@ -25,10 +26,11 @@ public final class PlayerWindow extends JFrame implements Runnable {
         setResizable(true);
         
         JPanel controls = new JPanel();
-        controls.setLayout(new GridLayout(1, 3));
+        controls.setLayout(new GridLayout(2, 3));
         controls.add(new BackButton());
         controls.add(new TogglePlaybackButton());
         controls.add(new SkipButton());
+        controls.add(new VolumeSlider());
 
         add(controls);
         pack();
@@ -54,7 +56,7 @@ public final class PlayerWindow extends JFrame implements Runnable {
     @Override
     public void run() {
         while(true) {
-            SwingUtilities.invokeLater(this::updateTitle);
+            SwingUtilities.invokeLater(() -> updateTitle());
             try {
                 Thread.sleep(100L);
             } catch(InterruptedException ex) {}

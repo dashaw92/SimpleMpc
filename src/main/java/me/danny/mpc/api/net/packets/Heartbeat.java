@@ -53,6 +53,9 @@ public final class Heartbeat implements Runnable {
                 String[] fields = line.split(": ", 2);
                 if(fields.length < 2) continue;
                 switch(fields[0].toLowerCase()) {
+                    case "volume":
+                        status.setVolume(Integer.parseInt(fields[1]));
+                        break;
                     case "repeat":
                         status.setRepeat(fields[1].equals("1"));
                         break;
@@ -111,15 +114,20 @@ public final class Heartbeat implements Runnable {
      */
     public static final class Status {
 
+        private int volume = 100;
         private boolean repeat = false, random = false, consume = false;
-        private  Single single = Single.FALSE;
-        private  int playlist = -1, playlistlength = 0;
+        private Single single = Single.FALSE;
+        private int playlist = -1, playlistlength = 0;
         private PlaybackState state = PlaybackState.STOP;
         private int song = -1, nextsong = -1;
         private int songid = -1, nextsongid = -1;
         private double elapsed = -1d;
         private int bitrate = 0x0;
         private double duration = -1d;
+        
+        private void setVolume(int volume) {
+            this.volume = volume;
+        }
         
         private void setRepeat(boolean repeat) {
             this.repeat = repeat;
@@ -175,6 +183,14 @@ public final class Heartbeat implements Runnable {
 
         private void setDuration(double duration) {
             this.duration = duration;
+        }
+        
+        /**
+         * Get the volume of the MPD server. 0-100
+         * @return The volume of the MPD server
+         */
+        public int getVolume() {
+            return volume;
         }
 
         /**

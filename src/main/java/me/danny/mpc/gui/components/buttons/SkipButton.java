@@ -1,4 +1,4 @@
-package me.danny.mpc.gui.components;
+package me.danny.mpc.gui.components.buttons;
 
 import me.danny.mpc.api.net.ConnectionManager;
 import me.danny.mpc.api.net.packets.NextSongPacket;
@@ -16,5 +16,4 @@ public final class SkipButton extends CommandButton {
     protected void onClick() {
         ConnectionManager.sendPacket(new NextSongPacket());
     }
-    
 }

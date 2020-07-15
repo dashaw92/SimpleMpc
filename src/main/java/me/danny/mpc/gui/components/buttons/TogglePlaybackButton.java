@@ -1,4 +1,4 @@
-package me.danny.mpc.gui.components;
+package me.danny.mpc.gui.components.buttons;
 
 import me.danny.mpc.api.PlaybackState;
 import me.danny.mpc.api.net.ConnectionManager;
@@ -27,10 +27,12 @@ public final class TogglePlaybackButton extends CommandButton {
 
     @Override
     protected void onClick() {
-        PlaybackState state = ConnectionManager.sendPacket(new TogglePlayPacket())
-                .orElse(PlaybackState.STOP);
-        
-        setText(getIcon(state.inverse()));
+        ConnectionManager.sendPacket(new TogglePlayPacket());
+        redraw();
     }
 
+    @Override
+    protected void redraw() {
+        setText(getIcon(Heartbeat.getLastStatus().getState().inverse()));
+    }
 }

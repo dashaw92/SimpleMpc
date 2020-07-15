@@ -1,4 +1,4 @@
-package me.danny.mpc.gui.components;
+package me.danny.mpc.gui.components.fields;
 
 import java.awt.FlowLayout;
 import java.awt.Font;

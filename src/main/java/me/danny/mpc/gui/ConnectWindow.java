@@ -6,8 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import me.danny.mpc.api.net.ConnectionManager;
-import me.danny.mpc.gui.components.CommandButton;
-import me.danny.mpc.gui.components.NamedInput;
+import me.danny.mpc.gui.components.buttons.CommandButton;
+import me.danny.mpc.gui.components.fields.NamedInput;
 
 @SuppressWarnings("serial")
 public final class ConnectWindow extends JFrame {
@@ -64,5 +64,8 @@ public final class ConnectWindow extends JFrame {
             
             parent.dispose();
         }
+
+        @Override
+        public void redraw() {}
     }
 }
