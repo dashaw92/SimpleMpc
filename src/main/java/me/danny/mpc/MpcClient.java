@@ -1,33 +1,37 @@
 package me.danny.mpc;
 
-import java.awt.GraphicsEnvironment;
-import java.awt.KeyboardFocusManager;
-
-import javax.swing.UIManager;
-
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import me.danny.mpc.api.net.ConnectionManager;
 import me.danny.mpc.api.net.packets.Heartbeat;
-import me.danny.mpc.gui.PlayerWindow;
-import me.danny.mpc.gui.util.KeyboardManager;
 
-public final class MpcClient {
+public final class MpcClient extends Application {
 
     public static void main(String[] args) {
-        if(GraphicsEnvironment.isHeadless()) {
-            System.err.println("This program requires a graphics environment to run!!! Just use mpc...");
-            return;
-        }
-        
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch(Exception ignored) {}
-      
         Arguments.parse(args);
-        Heartbeat.getLastStatus();
         ConnectionManager.connectTo(Arguments.getHost(), Arguments.getPort());
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyboardManager());
-        PlayerWindow gui = new PlayerWindow();
-        gui.setVisible(true);
+        Heartbeat.getLastStatus();
+        
+        launch();
+    }
+
+    @SuppressWarnings("exports")
+    @Override
+    public void start(Stage stage) throws Exception {
+        Platform.setImplicitExit(true);
+        
+        Parent player = FXMLLoader.load(getClass().getResource("/simple.fxml"));
+        stage.setTitle("me.danny.mpc.MpcClient");
+        stage.setScene(new Scene(player, 600, 400));
+        stage.setOnCloseRequest(event -> {
+            Platform.exit();
+            System.exit(0);
+        });
+        stage.show();
     }
     
 }
